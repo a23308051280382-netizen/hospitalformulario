@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Mega - Raúl Alejandro Soto García</title>
+    <style>
+        /* Estilos generales */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+
+        /* Encabezado (Color Aqua) */
+        header {
+            background-color: #00E5FF; /* Aqua brillante */
+            color: #1a1a1a;
+            text-align: center;
+            padding-top: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .logo-header {
+            max-height: 160px; 
+            border-radius: 50%; 
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        /* Barra de Navegación */
+        nav {
+            background-color: #00CBD6; /* Aqua un poco más oscuro para contraste */
+            margin-top: 25px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            display: block;
+            color: #1a1a1a;
+            text-decoration: none;
+            padding: 15px 30px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+        }
+
+        nav a:hover, nav a.activo {
+            background-color: #00A3AD; /* Tono aqua oscuro cuando está activo o hover */
+            color: white;
+        }
+
+        /* Contenido principal */
+        main {
+            flex: 1;
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Tarjetas blancas de contenido */
+        .seccion-blanca {
+            display: none; 
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+            overflow-x: auto;
+            line-height: 1.6;
+        }
+
+        /* Mostrar solo la sección activa */
+        .seccion-blanca.activa {
+            display: block;
+        }
+
+        h2 {
+            color: #0047AB; /* Cobalto */
+            border-bottom: 3px solid #00E5FF; /* Línea Aqua */
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        h3 {
+            color: #00cbd6;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+
+        /* Grid de Servicios */
+        .servicios-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+
+        .servicio-item {
+            background: #E0F7FA; 
+            padding: 15px;
+            border-left: 5px solid #00E5FF; 
+            border-radius: 4px;
+        }
+
+        /* Formularios */
+        .form-registro {
+            background-color: #F0FDFA; 
+            padding: 20px;
+            border-radius: 6px;
+            border: 1px solid #B2F5EA;
+            margin-bottom: 35px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: #0047AB;
+        }
+
+        .form-group input, .form-group select {
+            padding: 10px;
+            border: 1px solid #CBD5E1;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            background-color: white;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #00CBD6;
+            box-shadow: 0 0 0 3px rgba(0, 203, 214, 0.2);
+        }
+
+        .form-botones {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+
+        .btn-registrar {
+            background-color: #0047AB;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        .btn-registrar:hover {
+            background-color: #00CBD6;
+            color: #1a1a1a;
+        }
+
+        /* Contenedores de tablas ocultas al inicio */
+        .contenedor-tabla-oculta {
+            display: none;
+        }
+
+        /* Tablas de Datos */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            min-width: 700px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #00CBD6; 
+            color: #1a1a1a;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        /* Pie de página (Color Cobalto) */
+        footer {
+            background-color: #0047AB;
+            color: white;
+            text-align: center;
+            padding: 25px 0;
+            font-size: 0.9rem;
+            margin-top: auto;
+        }
+
+        .footer-info {
+            font-weight: bold;
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            display: inline-block;
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="data:image/jpeg;base64,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" class="logo-header">
+        <h1>HOSPITAL MEGA</h1>
+        <nav>
+            <ul>
+                <li><a id="btn-inicio" class="activo" onclick="cambiarSeccion('inicio')">Inicio</a></li>
+                <li><a id="btn-empleados" onclick="cambiarSeccion('empleados')">Empleados</a></li>
+                <li><a id="btn-citas" onclick="cambiarSeccion('citas')">Citas</a></li>
+                <li><a id="btn-pacientes" onclick="cambiarSeccion('pacientes')">Pacientes</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div id="inicio" class="seccion-blanca activa">
+            <h2>🏥 Nuestra Misión</h2>
+            <p>En <strong>Hospital Mega</strong>, nos dedicamos a proporcionar servicios de salud de alta calidad con tecnología de vanguardia y un trato humano excepcional. Nuestra prioridad es la recuperación integral de cada paciente.</p>
+
+            <h2>⚕️ Servicios Médicos</h2>
+            <div class="servicios-grid">
+                <div class="servicio-item">
+                    <strong>Urgencias 24/7:</strong> Atención inmediata para situaciones críticas con especialistas siempre disponibles.
+                </div>
+                <div class="servicio-item">
+                    <strong>Cirugía Avanzada:</strong> Quirófanos equipados con la última tecnología para procedimientos de alta complejidad.
+                </div>
+                <div class="servicio-item">
+                    <strong>Consulta Externa:</strong> Más de 20 especialidades médicas para el cuidado preventivo de tu familia.
+                </div>
+                <div class="servicio-item">
+                    <strong>Laboratorio y Rayos X:</strong> Resultados rápidos y precisos con equipos digitales de última generación.
+                </div>
+            </div>
+
+            <h2>📍 Contacto y Ubicación</h2>
+            <p>📍 Av. Tecnológico #128, Ciudad Juárez, Chih.<br>
+               📞 Teléfono: (656) 123-4567<br>
+               📧 Correo: contacto@hospitalmega.com</p>
+        </div>
+
+        <div id="empleados" class="seccion-blanca">
+            <h2>👥 Registro de Empleados</h2>
+            
+            <form id="form-empleados" class="form-registro" onsubmit="simularGuardado(event, 'empleados', 'Empleado')">
+                <div class="form-group">
+                    <label for="emp-id">ID Empleado:</label>
+                    <input type="text" id="emp-id" value="7000210498" required>
+                </div>
+                <div class="form-group">
+                    <label for="emp-nombre">Nombre / Puesto:</label>
+                    <input type="text" id="emp-nombre" value="Dr. Arriaga" required>
+                </div>
+                <div class="form-group">
+                    <label for="emp-tel">Teléfono:</label>
+                    <input type="tel" id="emp-tel" value="656-4893-728" required>
+                </div>
+                <div class="form-group">
+                    <label for="emp-correo">Correo Electrónico:</label>
+                    <input type="email" id="emp-correo" value="LuisA.78110@gmail.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="emp-turno">Turno:</label>
+                    <select id="emp-turno" required>
+                        <option value="Matutino">Matutino</option>
+                        <option value="Vespertino" selected>Vespertino</option>
+                        <option value="Nocturno">Nocturno</option>
+                    </select>
+                </div>
+                <div class="form-botones">
+                    <button type="submit" class="btn-registrar">+ Agregar Empleado</button>
+                </div>
+            </form>
+
+            <div id="tabla-empleados" class="contenedor-tabla-oculta">
+                <h3>📋 Listado de Personal Registrado</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre / Puesto</th>
+                            <th>Teléfono</th>
+                            <th>Correo Electrónico</th>
+                            <th>Turno</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>7000210498</td><td>Dr. Arriaga</td><td>656-4893-728</td><td>LuisA.78110@gmail.com</td><td>Vespertino</td></tr>
+                        <tr><td>2247996791</td><td>Dra. Torres</td><td>656-4257-6629</td><td>Alejandra22200@gmail.com</td><td>Vespertino</td></tr>
+                        <tr><td>3789887610</td><td>Dr. Mendez</td><td>656-6667-2292</td><td>33Alfons99@gmail.com</td><td>Matutino</td></tr>
+                        <tr><td>7669678910</td><td>Dr. Jara</td><td>656-3277-9826</td><td>Juan786543@gmail.com</td><td>Matutino</td></tr>
+                        <tr><td>9910028108</td><td>Dra. Rios</td><td>656-7760-0072</td><td>PerlaR7969@gmail.com</td><td>Matutino</td></tr>
+                        <tr><td>9753108990</td><td>Dra. Blanco</td><td>656-9280-8712</td><td>Garciab776@gmail.com</td><td>Matutino</td></tr>
+                        <tr><td>RGE-005</td><td>Gestión/RH - Sofía Valdés Luna</td><td>656-3326-7113</td><td>svaldesurrhh@hospi.com</td><td>Nocturno</td></tr>
+                        <tr><td>Enf-102</td><td>Enfermera - Elena Ramos Méndez</td><td>656-7223-9890</td><td>eramos@hospi.com</td><td>Matutino</td></tr>
+                        <tr><td>FAR-301</td><td>Farmacia - Lucía Mendoza Soto</td><td>656-7812-3321</td><td>lmendoz.farm@hospital.com</td><td>Vespertino</td></tr>
+                        <tr><td>APO-410</td><td>Apoyo/Admin - Jorge Ortiz Cano</td><td>656-7729-9234</td><td>Jortizapo@Hospital.com</td><td>Matutino</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="citas" class="seccion-blanca">
+            <h2>📅 Gestión de Citas Médicas</h2>
+            
+            <form id="form-citas" class="form-registro" onsubmit="simularGuardado(event, 'citas', 'Cita')">
+                <div class="form-group">
+                    <label for="cita-id">ID Cita:</label>
+                    <input type="text" id="cita-id" value="01" required>
+                </div>
+                <div class="form-group">
+                    <label for="cita-paciente-id">ID Paciente:</label>
+                    <input type="text" id="cita-paciente-id" value="000001" required>
+                </div>
+                <div class="form-group">
+                    <label for="cita-paciente">Nombre Paciente:</label>
+                    <input type="text" id="cita-paciente" value="Juan Perez Garcia" required>
+                </div>
+                <div class="form-group">
+                    <label for="cita-doc">Doctor Asignado:</label>
+                    <input type="text" id="cita-doc" value="Dr. Arriaga" required>
+                </div>
+                <div class="form-group">
+                    <label for="cita-fecha">Fecha:</label>
+                    <input type="date" id="cita-fecha" value="2026-02-02" required>
+                </div>
+                <div class="form-group">
+                    <label for="cita-hora">Hora:</label>
+                    <input type="time" id="cita-hora" value="16:00" required>
+                </div>
+                <div class="form-group">
+                    <label for="cita-estado">Estado:</label>
+                    <select id="cita-estado" required>
+                        <option value="Pendiente" selected>Pendiente</option>
+                        <option value="Estable">Estable</option>
+                        <option value="Cancelado">Cancelado</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="cita-motivo">Motivo de Consulta:</label>
+                    <input type="text" id="cita-motivo" value="Hipertensión arterial" required>
+                </div>
+                <div class="form-botones">
+                    <button type="submit" class="btn-registrar">📅 Agendar Cita</button>
+                </div>
+            </form>
+
+            <div id="tabla-citas" class="contenedor-tabla-oculta">
+                <h3>📋 Agenda de Consultas Activas</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID Cita</th>
+                            <th>ID Paciente</th>
+                            <th>Paciente</th>
+                            <th>Doctor</th>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Estado</th>
+                            <th>Motivo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>01</td><td>000001</td><td>Juan Perez Garcia</td><td>Dr. Arriaga</td><td>2/2/2026</td><td>4:00pm</td><td>Pendiente</td><td>Hipertensión arterial</td></tr>
+                        <tr><td>02</td><td>000002</td><td>Maria Lopez Sosa</td><td>Dra. Torres</td><td>26/2/2026</td><td>3:00pm</td><td>Pendiente</td><td>Faringitis aguda</td></tr>
+                        <tr><td>03</td><td>000003</td><td>Carlos Ruiz Vigil</td><td>Dr. Mendez</td><td>14/2/2026</td><td>10:00</td><td>Estable</td><td>Esguince de tobillo</td></tr>
+                        <tr><td>04</td><td>000004</td><td>Elena Sanz Pozo</td><td>Dra. Rios</td><td>29/2/2026</td><td>15/2/2026</td><td>Estable</td><td>Control de embarazo</td></tr>
+                        <tr><td>05</td><td>000005</td><td>Patricia Quintana</td><td>Dr. Jara</td><td>20/1/2026</td><td>9:00</td><td>Cancelado</td><td>Diabetes tipo 2</td></tr>
+                        <tr><td>06</td><td>000006</td><td>Jorge Luis Borges</td><td>Dra. Blanco</td><td>11/1/2026</td><td>11:30</td><td>Cancelado</td><td>Programación de cirugía</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="pacientes" class="seccion-blanca">
+            <h2>🤕 Control de Pacientes</h2>
+            
+            <form id="form-pacientes" class="form-registro" onsubmit="simularGuardado(event, 'pacientes', 'Paciente')">
+                <div class="form-group">
+                    <label for="pac-nombre">Nombre Completo:</label>
+                    <input type="text" id="pac-nombre" value="Miguel Angel Soler" required>
+                </div>
+                <div class="form-group">
+                    <label for="pac-edad">Edad:</label>
+                    <input type="number" id="pac-edad" min="0" max="120" value="25" required>
+                </div>
+                <div class="form-group">
+                    <label for="pac-fisico">Estatura / Peso:</label>
+                    <input type="text" id="pac-fisico" value="1.45 m / 72 k" required>
+                </div>
+                <div class="form-group">
+                    <label for="pac-sangre">Tipo de Sangre:</label>
+                    <select id="pac-sangre" required>
+                        <option value="O+" selected>O+</option>
+                        <option value="O-">O-</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="AB+">AB+</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="pac-tel">Teléfono:</label>
+                    <input type="tel" id="pac-tel" value="555-4321" required>
+                </div>
+                <div class="form-group">
+                    <label for="pac-dir">Dirección:</label>
+                    <input type="text" id="pac-dir" value="Col. Industrial 15" required>
+                </div>
+                <div class="form-group">
+                    <label for="pac-diag">Diagnóstico Inicial:</label>
+                    <input type="text" id="pac-diag" value="Lumbalgia aguda" required>
+                </div>
+                <div class="form-group">
+                    <label for="pac-trat">Tratamiento:</label>
+                    <input type="text" id="pac-trat" value="Reposo y fisioterapia" required>
+                </div>
+                <div class="form-botones">
+                    <button type="submit" class="btn-registrar">🤕 Registrar Paciente</button>
+                </div>
+            </form>
+
+            <div id="tabla-pacientes" class="contenedor-tabla-oculta">
+                <h3>📋 Expedientes Clínicos Almacenados</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Edad</th>
+                            <th>Estatura / Peso</th>
+                            <th>Sangre</th>
+                            <th>Teléfono</th>
+                            <th>Dirección</th>
+                            <th>Diagnóstico</th>
+                            <th>Tratamiento</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Miguel Angel Soler</td><td>25</td><td>1.45 m / 72 k</td><td>O+</td><td>555-4321</td><td>Col. Industrial 15</td><td>Lumbalgia aguda</td><td>Reposo y fisioterapia</td></tr>
+                        <tr><td>Patricia Quintana</td><td>25</td><td>1.52 m / 80 k</td><td>O-</td><td>555-5544</td><td>Paseo de la reforma</td><td>Diabetes Tipo 2</td><td>Ajuste de insulina</td></tr>
+                        <tr><td>Jorge Luis Borges</td><td>20</td><td>1.60 m / 78 k</td><td>AB-</td><td>555-2211</td><td>Calle de los espejos</td><td>Cataratas</td><td>Programación de cirugía</td></tr>
+                        <tr><td>Ana Maria Rossi</td><td>27</td><td>1.65 m / 70 k</td><td>AB+</td><td>555-3388</td><td>Av. libertad 789</td><td>Anemia ferropenica</td><td>Suplemento de hierro</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p><strong>CBTIS 128</strong></p>
+        <div class="footer-info">
+            <p>Estudiante: Raul Alejandro Soto Garcia | No. Control: 0382</p>
+            <p>Grado y Grupo: 4-J</p>
+            <p>Especialidad: Implementa bases de datos no relacionales en un si</p>
+        </div>
+    </footer>
+
+    <script>
+        // Cambiar entre pestañas de navegación
+        function cambiarSeccion(idSeccion) {
+            var secciones = document.querySelectorAll('.seccion-blanca');
+            secciones.forEach(function(seccion) {
+                seccion.classList.remove('activa');
+            });
+
+            var botones = document.querySelectorAll('nav a');
+            botones.forEach(function(boton) {
+                boton.classList.remove('activo');
+            });
+
+            document.getElementById(idSeccion).classList.add('activa');
+            document.getElementById('btn-' + idSeccion).classList.add('activo');
+        }
+
+        // Muestra la tabla de datos correspondiente y oculta el formulario al registrar
+        function simularGuardado(event, idContenedorTabla, tipoRegistro) {
+            event.preventDefault(); // Evita que la página se reinicie
+            
+            alert("¡Éxito! Registro procesado. Los datos de " + tipoRegistro + " se han sincronizado con la Base de Datos No Relacional de Hospital Mega.");
+            
+            // Ocultamos el formulario que se acaba de enviar
+            event.target.style.display = 'none';
+
+            // Hace visible el bloque de la tabla de datos
+            document.getElementById('tabla-' + idContenedorTabla).style.display = 'block';
+        }
+    </script>
+
+</body>
+</html>
